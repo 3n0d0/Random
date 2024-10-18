@@ -66,4 +66,28 @@ foreach ($char in $text.ToCharArray()) {
 
 
 
+#######################################
+2nd attempt 
+#######################################
+# Ensure the script is run with the right parameters
+if ($args.Count -eq 0) {
+    Write-Host "Usage: .\sendkeys.ps1 'text to type'"
+    exit
+}
+
+# Retrieve the text to send
+$text = $args[0]
+
+# Wait for 5 seconds
+Start-Sleep -Seconds 5
+
+# Load the necessary assembly for SendKeys
+Add-Type -AssemblyName System.Windows.Forms
+
+# Send the keystrokes
+foreach ($char in $text.ToCharArray()) {
+    [System.Windows.Forms.SendKeys]::SendWait($char)
+    Start-Sleep -Milliseconds 100 # Optional delay for typing speed
+}
+
 
