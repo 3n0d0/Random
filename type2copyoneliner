@@ -5,3 +5,7 @@ Start-Sleep -Seconds 5; Add-Type -AssemblyName 'System.Windows.Forms' -ErrorActi
 
 
 Start-Sleep -Seconds 5; $text = 'This is a test'; $text.ToCharArray() | ForEach-Object { Write-Host -NoNewline $_; Start-Sleep -Milliseconds 100 }
+
+
+## Using VBS
+powershell -ExecutionPolicy Bypass -Command "Start-Sleep -Seconds 5; $text = 'This is a test'; $vbScript = \"$wshell = CreateObject('WScript.Shell'); WScript.Sleep 1000; $wshell.SendKeys('$text')\"; $vbScript | Set-Content -Path \"$env:TEMP\temp.vbs\"; cscript //nologo \"$env:TEMP\temp.vbs\"; Remove-Item \"$env:TEMP\temp.vbs\""
