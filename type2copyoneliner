@@ -90,4 +90,33 @@ foreach ($char in $text.ToCharArray()) {
     Start-Sleep -Milliseconds 100 # Optional delay for typing speed
 }
 
+##################################################################################
+
+param (
+    [string]$text
+)
+
+# Check if text is provided
+if (-not $text) {
+    Write-Host "Usage: .\sendkeys.ps1 'text to type'"
+    exit
+}
+
+# Wait for 5 seconds
+Start-Sleep -Seconds 5
+
+# Load the necessary assembly for SendKeys
+[Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+
+# Check if the type is available
+if (-not [System.Windows.Forms.SendKeys]) {
+    Write-Host "Unable to load System.Windows.Forms.SendKeys. Make sure the assembly is available."
+    exit
+}
+
+# Send the keystrokes
+foreach ($char in $text.ToCharArray()) {
+    [System.Windows.Forms.SendKeys]::SendWait($char)
+    Start-Sleep -Milliseconds 100 # Optional delay for typing speed
+}
 
