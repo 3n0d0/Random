@@ -37,3 +37,33 @@ cscript //nologo $vbScriptPath
 
 # Clean up the VBScript
 Remove-Item $vbScriptPath
+
+
+
+
+
+
+
+####### using Add-Type
+
+param (
+    [string]$text
+)
+
+# Wait for 5 seconds
+Start-Sleep -Seconds 5
+
+# Load the necessary assembly if it's not already loaded
+if (-not [System.Windows.Forms.SendKeys]) {
+    Add-Type -AssemblyName System.Windows.Forms
+}
+
+# Send the keystrokes
+foreach ($char in $text.ToCharArray()) {
+    [System.Windows.Forms.SendKeys]::SendWait($char)
+    Start-Sleep -Milliseconds 100 # Optional delay for typing speed
+}
+
+
+
+
