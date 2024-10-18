@@ -9,3 +9,31 @@ Start-Sleep -Seconds 5; $text = 'This is a test'; $text.ToCharArray() | ForEach-
 
 ## Using VBS
 powershell -ExecutionPolicy Bypass -Command "Start-Sleep -Seconds 5; $text = 'This is a test'; $vbScript = \"$wshell = CreateObject('WScript.Shell'); WScript.Sleep 1000; $wshell.SendKeys('$text')\"; $vbScript | Set-Content -Path \"$env:TEMP\temp.vbs\"; cscript //nologo \"$env:TEMP\temp.vbs\"; Remove-Item \"$env:TEMP\temp.vbs\""
+
+
+
+##script run with script.ps1 "text to test"
+
+param (
+    [string]$text
+)
+
+# Wait for 5 seconds
+Start-Sleep -Seconds 5
+
+# Create a VBScript that sends the keystrokes
+$vbScriptPath = "$env:TEMP\sendkeys.vbs"
+$vbScriptContent = @"
+Set WshShell = CreateObject("WScript.Shell")
+WScript.Sleep 1000
+WshShell.SendKeys "$text"
+"@
+
+# Write the VBScript to a file
+$vbScriptContent | Set-Content -Path $vbScriptPath
+
+# Run the VBScript
+cscript //nologo $vbScriptPath
+
+# Clean up the VBScript
+Remove-Item $vbScriptPath
