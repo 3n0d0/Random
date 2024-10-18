@@ -120,3 +120,63 @@ foreach ($char in $text.ToCharArray()) {
     Start-Sleep -Milliseconds 100 # Optional delay for typing speed
 }
 
+########################################################
+# Define the necessary User32 functions
+$signature = @"
+    [DllImport("user32.dll")]
+    public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+"@
+
+# Load the User32 library and define the methods
+Add-Type -MemberDefinition $signature -Name User32 -Namespace WindowsAPI
+
+# Define key constants
+$KEYEVENTF_KEYUP = 0x0002
+$VK_SHIFT = 0x10
+$VK_A = 0x41
+$VK_B = 0x42
+$VK_C = 0x43
+
+function Send-Key {
+    param (
+        [byte]$key,
+        [switch]$shift
+    )
+
+    if ($shift) {
+        [WindowsAPI.User32]::keybd_event($VK_SHIFT, 0, 0, [UIntPtr]::Zero)
+    }
+
+    [WindowsAPI.User32]::keybd_event($key, 0, 0, [UIntPtr]::Zero)
+    Start-Sleep -Milliseconds 50 # Delay between key presses
+    [WindowsAPI.User32]::keybd_event($key, 0, $KEYEVENTF_KEYUP, [UIntPtr]::Zero)
+
+    if ($shift) {
+        [WindowsAPI.User32]::keybd_event($VK_SHIFT, 0, $KEYEVENTF_KEYUP, [UIntPtr]::Zero)
+    }
+}
+
+# Wait for 5 seconds
+Start-Sleep -Seconds 5
+
+# Check if text is provided
+if ($args.Count -eq 0) {
+    Write-Host "Usage: .\sendkeys.ps1 'text to type'"
+    exit
+}
+
+# Send the keystrokes for each character in the provided text
+foreach ($char in $args[0].ToCharArray()) {
+    switch ($char) {
+        'a' { Send-Key -key $VK_A }
+        'b' { Send-Key -key $VK_B }
+        'c' { Send-Key -key $VK_C }
+        # Add cases for additional characters as needed
+        default {
+            Write-Host "Character '$char' not implemented."
+        }
+    }
+}
+
+
+
