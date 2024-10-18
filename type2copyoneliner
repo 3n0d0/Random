@@ -179,4 +179,22 @@ foreach ($char in $args[0].ToCharArray()) {
 }
 
 
+################################################################
+7th version
+##################################################################
+
+# Check if arguments were passed
+if ($args.Count -eq 0) {
+    Write-Host "Usage: .\sendkeys.ps1 'text to type'"
+    exit
+}
+
+# Wait for 5 seconds
+Start-Sleep -Seconds 5
+
+# Create a WScript.Shell COM object
+$shell = New-Object -ComObject WScript.Shell
+
+# Send the text as keystrokes
+$shell.SendKeys($args[0])
 
